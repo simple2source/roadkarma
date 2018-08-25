@@ -1,45 +1,69 @@
+# leetcode 53:Maximum Subarray
+# For example, given the array [−2,1,−3,4,−1,2,1,−5,4],
+# the contiguous subarray [4,−1,2,1] has the largest sum = 6.
 
-def find_idx(L):
-    idx = len(L) -1
-    max_s = float('-inf')
-    s = 0
-    for i in range(idx, -1, -1):
-        s += L[i]
-        if s > max_s:
-            idx = i
-            max_s = s
-    print(idx, '---')
-    return idx
 
-find_idx([1,2,3,-1,2,6,5])
-find_idx([1,2,5,-8,4,6,-9,-11])
-# l = [1, 4, -5, 3, 7, 11, -9] , 55:Maximum Subarray
-
-def find_iadd_max_num_index(array):
+def max_sub_array_sum(array):
     if not array:
         return None
+    max_num = 0
+    sum_num = 0
     length = len(array)
-    l = []
-    max_num = 0
-    for i in range(0, length):
-        if array[i]>0:
-            max_num+=array[i]
-        else:
-            l.append((max_num, i))
-            max_num = 0
-    else:
-        if max_num>0:
-            l.append((max_num, i))
+    for i in range(length):
+        if sum_num < 0:
+            sum_num = 0
+        sum_num += array[i]
+        max_num = max(max_num, sum_num)
+    return max_num
 
-    max_num = 0
-    idx = 0
-    for it in l:
-        if it[0]>max_num:
-            max_num,idx = it
-    print(max_num, idx)
+
+# test
+print(max_sub_array_sum([-2, 1, -3, 4, -1, 2, 1, -5, 4]))
+# 不能计算出负数的情况
+print(max_sub_array_sum([-4, -1, -2, -4, - 9]))
+
+
+def max_sub_array_sum_2(array):
+    length = len(array)
+    max_so_far = array[0]
+    current_max = array[0]
+    for i in range(1, length):
+        current_max = max(array[i], current_max + array[i])
+        max_so_far = max(max_so_far, current_max)
+    return max_so_far
+
+
+# test
+print(max_sub_array_sum_2([-2, 1, -3, 4, -1, 2, 1, -5, 4]))
+print(max_sub_array_sum_2([-4, -11, -3, -5, -4, -9]))
+print(max_sub_array_sum_2([5, 2, 1, 6, 8, 0, -2, 5]), '-------')
+
+
+def max_sub_array_sum_and_index(array):
+    length = len(array)
+    max_so_far = 0
+    max_ending_here = 0
+    start = 0
+    end = 0
+    s = 0
+
+    for i in range(length):
+        max_ending_here += array[i]
+
+        if max_so_far < max_ending_here:
+            max_so_far = max_ending_here
+            start = s
+            end = i
+
+        if max_ending_here < 0:
+            max_ending_here = 0
+            s = i + 1
+    return max_so_far, start, end
+
+
+# test
+print(max_sub_array_sum_and_index([-2, 1, -3, 4, -1, 2, 1, -5, 4]))
+print(max_sub_array_sum_and_index([-4, -11, -3, -5, -4, -9]))
 
 if __name__ == '__main__':
-    find_iadd_max_num_index([1, 4, -5, 6, 7, 11, -9, 12, 45, -4, 11])
-    find_iadd_max_num_index([1, 4, -5, 3, 7, 11, -9])
-    find_iadd_max_num_index([-1,-2, -3, 2, 5,4])
-    find_iadd_max_num_index([1,2,3,-1,2,6,5])
+    pass
